@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Primary Food Has a Deadline palette tokens */
+    --background: 129 33% 96%;        /* #F1F8F2 - subtle pale green */
+    --foreground: 153 30% 13%;        /* #172B22 - deep charcoal forest */
+
+    --card: 0 0% 100%;                /* #FFFFFF - crisp white */
+    --card-foreground: 153 30% 13%;   /* #172B22 */
+
+    --popover: 0 0% 100%;             /* #FFFFFF */
+    --popover-foreground: 153 30% 13%;
+
+    --primary: 142 76% 36%;           /* #16A34A - deep vibrant green */
+    --primary-foreground: 0 0% 100%;  /* #FFFFFF */
+
+    --secondary: 141 84% 93%;         /* #DCFCE7 - light green accent */
+    --secondary-foreground: 143 64% 24%; /* #166534 - dark green */
+
+    --muted: 129 25% 92%;
+    --muted-foreground: 134 8% 43%;   /* #647568 - secondary text */
+
+    --accent: 141 84% 93%;            /* #DCFCE7 */
+    --accent-foreground: 143 64% 24%; /* #166534 */
+
+    --destructive: 0 72% 51%;         /* #DC2626 - error red */
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 129 22% 89%;            /* #DCE9DE - soft border */
+    --input: 129 22% 89%;             /* #DCE9DE */
+    --ring: 142 76% 36%;              /* #16A34A */
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 155 35% 8%;
+    --foreground: 130 20% 96%;
+
+    --card: 155 30% 11%;
+    --card-foreground: 130 20% 96%;
+
+    --popover: 155 30% 11%;
+    --popover-foreground: 130 20% 96%;
+
+    --primary: 142 70% 45%;
+    --primary-foreground: 155 40% 6%;
+
+    --secondary: 150 25% 18%;
+    --secondary-foreground: 140 60% 85%;
+
+    --muted: 155 25% 16%;
+    --muted-foreground: 140 10% 65%;
+
+    --accent: 150 25% 18%;
+    --accent-foreground: 140 60% 85%;
+
+    --destructive: 0 65% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 150 20% 20%;
+    --input: 150 20% 20%;
+    --ring: 142 70% 45%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased selection:bg-primary/20 selection:text-foreground;
+  }
+}
