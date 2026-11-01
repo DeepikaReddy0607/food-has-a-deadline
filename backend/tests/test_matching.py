@@ -418,6 +418,18 @@ def setup_matching_scenario(client):
     )
     demand2_id = res_d2.json()["id"]
 
+    from app.database.session import get_db
+    override = client.app.dependency_overrides.get(get_db)
+    if override:
+        db = next(override())
+        for sp in db.query(SupplierProfile).all():
+            sp.verification_status = "VERIFIED"
+            sp.is_verified = True
+        for rp in db.query(ReceiverProfile).all():
+            rp.verification_status = "VERIFIED"
+            rp.is_verified = True
+        db.commit()
+
     return {
         "sup_headers": sup_headers,
         "rec1_headers": rec1_headers,

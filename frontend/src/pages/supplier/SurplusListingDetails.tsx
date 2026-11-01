@@ -47,6 +47,7 @@ export const SurplusListingDetails: React.FC = () => {
 
   // Geospatial route estimation states
   const [receivers, setReceivers] = useState<ReceiverProfile[]>([])
+  const [receiversLoading, setReceiversLoading] = useState(true)
   const [selectedReceiverId, setSelectedReceiverId] = useState<string>('')
   const [handlingBuffer, setHandlingBuffer] = useState<number>(30)
   const [routeEstimate, setRouteEstimate] = useState<RouteEstimateResult | null>(null)
@@ -110,6 +111,7 @@ export const SurplusListingDetails: React.FC = () => {
 
   useEffect(() => {
     const loadReceivers = async () => {
+      setReceiversLoading(true)
       try {
         const list = await apiService.getReceiversDirectory()
         setReceivers(list)
@@ -118,6 +120,8 @@ export const SurplusListingDetails: React.FC = () => {
         }
       } catch (e) {
         console.warn('Failed to load receiver directory', e)
+      } finally {
+        setReceiversLoading(false)
       }
     }
     loadReceivers()
@@ -622,7 +626,12 @@ export const SurplusListingDetails: React.FC = () => {
               <label className="text-xs font-medium text-foreground block">
                 Destination Receiver Facility:
               </label>
-              {receivers.length > 0 ? (
+              {receiversLoading ? (
+                <div className="flex items-center gap-2 text-xs text-muted-foreground italic py-1">
+                  <div className="w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                  Loading verified receiver organizations...
+                </div>
+              ) : receivers.length > 0 ? (
                 <select
                   value={selectedReceiverId}
                   onChange={(e) => setSelectedReceiverId(e.target.value)}
@@ -630,13 +639,13 @@ export const SurplusListingDetails: React.FC = () => {
                 >
                   {receivers.map((r) => (
                     <option key={r.id} value={r.id}>
-                      {r.organization_name} ({r.city || r.district || 'Facility'}) — Category: {r.receiver_category} — Cap: {r.capacity_daily_kg} kg/day
+                      {r.organization_name} {r.is_verified || r.verification_status === 'VERIFIED' ? '✓ [Verified]' : `[${r.verification_status || 'Unverified'}]`} ({r.city || r.district || 'Facility'}) — Category: {r.receiver_category} — Cap: {r.capacity_daily_kg} kg/day
                     </option>
                   ))}
                 </select>
               ) : (
                 <div className="text-xs text-muted-foreground italic py-1">
-                  Loading verified receiver organizations...
+                  No registered receiver organizations found in the network.
                 </div>
               )}
             </div>

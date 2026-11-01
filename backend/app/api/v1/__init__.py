@@ -10,6 +10,7 @@ from app.api.v1.matching import router as matching_router
 from app.api.v1.optimization import router as optimization_router
 from app.api.v1.agent import router as agent_router
 from app.api.v1.transactions import router as transactions_router
+from app.api.v1.verifications import router as verifications_router
 from app.api.deps import require_role
 from app.models.user import User
 from fastapi import Depends
@@ -26,6 +27,7 @@ api_v1_router.include_router(matching_router)
 api_v1_router.include_router(optimization_router)
 api_v1_router.include_router(agent_router)
 api_v1_router.include_router(transactions_router)
+api_v1_router.include_router(verifications_router)
 
 
 # RBAC test verification route for coordinators and admins

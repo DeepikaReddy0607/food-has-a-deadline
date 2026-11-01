@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { apiService } from '@/services/api'
 import type { SurplusListing, SurplusStatus } from '@/types'
 import { Button } from '@/components/ui/button'
+import { VerificationStatusBanner } from '@/components/verification/VerificationStatusBanner'
 import {
   AlertCircle,
   Clock,
@@ -210,6 +211,8 @@ export const MySurplusInventory: React.FC = () => {
 
   return (
     <div className="max-w-6xl mx-auto py-8 px-4 space-y-6">
+      <VerificationStatusBanner />
+
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>

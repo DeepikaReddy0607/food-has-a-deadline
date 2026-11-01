@@ -93,6 +93,14 @@ class MatchingService:
         if d_out <= 0:
             rejection_reasons.append("Demand request has zero outstanding requirement")
 
+        # Check Hard Constraint: Verified Organization
+        s_ver = getattr(supplier, "verification_status", "VERIFIED")
+        if s_ver != "VERIFIED":
+            rejection_reasons.append(f"Supplier organization is not verified (status: '{s_ver}')")
+        r_ver = getattr(receiver, "verification_status", "VERIFIED")
+        if r_ver != "VERIFIED":
+            rejection_reasons.append(f"Receiver organization is not verified (status: '{r_ver}')")
+
         # Check Hard Constraint 4: Product Compatibility
         prod_comp = ProductCompatibilityEvaluator.evaluate(
             surplus_category=listing.food_category,

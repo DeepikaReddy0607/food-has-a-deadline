@@ -1,17 +1,33 @@
+from typing import List
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from app.database.session import get_db
-from app.api.deps import require_role
+from app.api.deps import require_role, get_current_user
 from app.models.user import User
 from app.schemas.profile import (
     SupplierProfileCreate,
     SupplierProfileUpdate,
     SupplierProfileResponse,
 )
+from app.repositories.profile_repo import SupplierProfileRepository
 from app.services.profile_service import SupplierProfileService
 
 router = APIRouter(prefix="/suppliers", tags=["Supplier Management"])
+
+
+@router.get(
+    "/directory",
+    response_model=List[SupplierProfileResponse],
+    status_code=status.HTTP_200_OK,
+    summary="List supplier directory",
+    description="Retrieve list of registered supplier organizations with facility locations and types.",
+)
+def list_suppliers_directory(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> List[SupplierProfileResponse]:
+    return SupplierProfileRepository.list_all(db)
 
 
 @router.post(

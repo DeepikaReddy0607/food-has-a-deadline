@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import { apiService } from '@/services/api'
 import type { SupplierProfile } from '@/types'
 import { Button } from '@/components/ui/button'
+import { VerificationBadge } from '@/components/common/VerificationBadge'
+import { VerificationStatusBanner } from '@/components/verification/VerificationStatusBanner'
 import {
   AlertCircle,
   Building2,
@@ -83,13 +85,16 @@ export const SupplierProfileView: React.FC = () => {
 
   return (
     <div className="max-w-3xl mx-auto my-8 space-y-6">
+      <VerificationStatusBanner onStatusLoaded={fetchProfile} />
+
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
         <div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
             <h1 className="text-2xl font-extrabold tracking-tight">{profile.organization_name}</h1>
             <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary border border-primary/20">
               {profile.facility_type}
             </span>
+            <VerificationBadge status={profile.verification_status} />
           </div>
           <p className="text-xs text-muted-foreground mt-1">
             Registered Food Supplier &bull; ID: {profile.id.slice(0, 8)}...

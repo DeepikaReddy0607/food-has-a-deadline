@@ -53,6 +53,13 @@ class ReceiverCategory(str, Enum):
     OTHER = "OTHER"
 
 
+class VerificationStatus(str, Enum):
+    PENDING_VERIFICATION = "PENDING_VERIFICATION"
+    DOCUMENTS_SUBMITTED = "DOCUMENTS_SUBMITTED"
+    VERIFIED = "VERIFIED"
+    REJECTED = "REJECTED"
+
+
 class User(Base):
     __tablename__ = "users"
 
@@ -66,6 +73,9 @@ class User(Base):
     role: Mapped[str] = mapped_column(String(32), index=True, nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    verification_status: Mapped[str] = mapped_column(
+        String(32), default="PENDING_VERIFICATION", nullable=False
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
@@ -81,18 +91,24 @@ class User(Base):
             "role IN ('SUPPLIER', 'RECEIVER', 'COORDINATOR', 'ADMIN')",
             name="ck_users_role",
         ),
+        CheckConstraint(
+            "verification_status IN ('PENDING_VERIFICATION', 'DOCUMENTS_SUBMITTED', 'VERIFIED', 'REJECTED')",
+            name="ck_users_verification_status",
+        ),
     )
 
     # 1-to-1 Profile Relationships
     supplier_profile: Mapped[Optional["SupplierProfile"]] = relationship(
         "SupplierProfile",
         back_populates="user",
+        foreign_keys="[SupplierProfile.user_id]",
         cascade="all, delete-orphan",
         uselist=False,
     )
     receiver_profile: Mapped[Optional["ReceiverProfile"]] = relationship(
         "ReceiverProfile",
         back_populates="user",
+        foreign_keys="[ReceiverProfile.user_id]",
         cascade="all, delete-orphan",
         uselist=False,
     )
@@ -135,6 +151,29 @@ class SupplierProfile(Base):
         JSON().with_variant(JSONB, "postgresql"), nullable=True, default=dict
     )
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    verification_status: Mapped[str] = mapped_column(
+        String(32), default="PENDING_VERIFICATION", nullable=False
+    )
+    license_number: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    representative_name: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    verification_document_path: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
+    verification_document_name: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    verification_submitted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    verified_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    verified_by_user_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        Uuid(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+    )
+    rejection_reason: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
+    @property
+    def is_verified(self) -> bool:
+        return self.verification_status == "VERIFIED"
+
+    @is_verified.setter
+    def is_verified(self, val: bool) -> None:
+        if val:
+            self.verification_status = "VERIFIED"
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
@@ -152,10 +191,14 @@ class SupplierProfile(Base):
         CheckConstraint(
             "longitude BETWEEN -180 AND 180", name="ck_supplier_longitude"
         ),
+        CheckConstraint(
+            "verification_status IN ('PENDING_VERIFICATION', 'DOCUMENTS_SUBMITTED', 'VERIFIED', 'REJECTED')",
+            name="ck_supplier_verification_status",
+        ),
         Index("idx_supplier_coords", "latitude", "longitude"),
     )
 
-    user: Mapped["User"] = relationship("User", back_populates="supplier_profile")
+    user: Mapped["User"] = relationship("User", back_populates="supplier_profile", foreign_keys=[user_id])
     surplus_listings: Mapped[List["SurplusListing"]] = relationship(
         "SurplusListing", back_populates="supplier"
     )
@@ -199,6 +242,29 @@ class ReceiverProfile(Base):
         Integer, nullable=False, default=3
     )
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    verification_status: Mapped[str] = mapped_column(
+        String(32), default="PENDING_VERIFICATION", nullable=False
+    )
+    license_number: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    representative_name: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    verification_document_path: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
+    verification_document_name: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    verification_submitted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    verified_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    verified_by_user_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        Uuid(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+    )
+    rejection_reason: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
+    @property
+    def is_verified(self) -> bool:
+        return self.verification_status == "VERIFIED"
+
+    @is_verified.setter
+    def is_verified(self, val: bool) -> None:
+        if val:
+            self.verification_status = "VERIFIED"
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
@@ -222,11 +288,15 @@ class ReceiverProfile(Base):
         CheckConstraint(
             "priority_level BETWEEN 1 AND 5", name="ck_receiver_priority_level"
         ),
+        CheckConstraint(
+            "verification_status IN ('PENDING_VERIFICATION', 'DOCUMENTS_SUBMITTED', 'VERIFIED', 'REJECTED')",
+            name="ck_receiver_verification_status",
+        ),
         Index("idx_receiver_coords", "latitude", "longitude"),
         Index("idx_receiver_priority", "priority_level"),
     )
 
-    user: Mapped["User"] = relationship("User", back_populates="receiver_profile")
+    user: Mapped["User"] = relationship("User", back_populates="receiver_profile", foreign_keys=[user_id])
     demand_requests: Mapped[List["DemandRequest"]] = relationship(
         "DemandRequest", back_populates="receiver"
     )

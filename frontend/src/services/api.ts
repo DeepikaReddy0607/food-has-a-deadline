@@ -36,6 +36,8 @@ import type {
   TransactionResponse,
   TransactionListResponse,
   ProposalActionResponse,
+  OrganizationVerificationItem,
+  OrganizationVerificationStatusResponse,
 } from '@/types'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
@@ -232,9 +234,14 @@ export const apiService = {
     return response.data
   },
 
-  // Geospatial Routing
+  // Geospatial Routing & Directories
   async getReceiversDirectory(): Promise<ReceiverProfile[]> {
     const response = await apiClient.get<ReceiverProfile[]>('/api/v1/receivers/directory')
+    return response.data
+  },
+
+  async getSuppliersDirectory(): Promise<SupplierProfile[]> {
+    const response = await apiClient.get<SupplierProfile[]>('/api/v1/suppliers/directory')
     return response.data
   },
 
@@ -380,5 +387,57 @@ export const apiService = {
       data
     )
     return response.data
+  },
+
+  // Organization Verification Methods
+  async getVerificationStatus(): Promise<OrganizationVerificationStatusResponse> {
+    const response = await apiClient.get<OrganizationVerificationStatusResponse>('/api/v1/verifications/status')
+    return response.data
+  },
+
+  async submitVerification(formData: FormData): Promise<OrganizationVerificationStatusResponse> {
+    const response = await apiClient.post<OrganizationVerificationStatusResponse>(
+      '/api/v1/verifications/submit',
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    )
+    return response.data
+  },
+
+  async listVerifications(params?: {
+    status?: string
+    org_type?: string
+  }): Promise<OrganizationVerificationItem[]> {
+    const response = await apiClient.get<OrganizationVerificationItem[]>('/api/v1/verifications', {
+      params,
+    })
+    return response.data
+  },
+
+  async approveVerification(orgType: string, profileId: string): Promise<OrganizationVerificationItem> {
+    const response = await apiClient.post<OrganizationVerificationItem>(
+      `/api/v1/verifications/${orgType}/${profileId}/approve`
+    )
+    return response.data
+  },
+
+  async rejectVerification(
+    orgType: string,
+    profileId: string,
+    reason: string
+  ): Promise<OrganizationVerificationItem> {
+    const response = await apiClient.post<OrganizationVerificationItem>(
+      `/api/v1/verifications/${orgType}/${profileId}/reject`,
+      { reason }
+    )
+    return response.data
+  },
+
+  getVerificationDocumentUrl(orgType: string, profileId: string): string {
+    return `${API_BASE_URL}/api/v1/verifications/${orgType}/${profileId}/document`
   },
 }

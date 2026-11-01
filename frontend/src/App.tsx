@@ -30,6 +30,7 @@ import { EditDemandRequest } from '@/pages/receiver/EditDemandRequest'
 // Module 8 & 10: Coordinator Optimization Engine & Dispatch Transactions
 import { OptimizationDashboard } from '@/pages/coordinator/OptimizationDashboard'
 import { TransactionsDashboard } from '@/pages/coordinator/TransactionsDashboard'
+import { OrganizationVerificationsPage } from '@/pages/coordinator/OrganizationVerificationsPage'
 
 // Module 9: AI Redistribution Agent
 import { AssistantPage } from '@/pages/assistant/AssistantPage'
@@ -74,6 +75,7 @@ export const App: React.FC = () => {
             <Route element={<ProtectedRoute allowedRoles={['COORDINATOR', 'ADMIN']} />}>
               <Route path="coordinator/optimization" element={<OptimizationDashboard />} />
               <Route path="coordinator/transactions" element={<TransactionsDashboard />} />
+              <Route path="coordinator/verifications" element={<OrganizationVerificationsPage />} />
             </Route>
 
             {/* Module 9: AI Redistribution Copilot (Authenticated) */}

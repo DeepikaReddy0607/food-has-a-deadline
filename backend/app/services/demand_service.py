@@ -33,6 +33,12 @@ class DemandService:
     ) -> DemandRequest:
         profile = cls._get_verified_receiver_profile(db, user)
 
+        if profile.verification_status == "REJECTED":
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Rejected organizations cannot publish demand requests.",
+            )
+
         # Fallback to receiver profile address if delivery_address is empty
         if not data.delivery_address or not data.delivery_address.strip():
             data.delivery_address = (

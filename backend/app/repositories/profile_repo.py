@@ -22,7 +22,22 @@ class SupplierProfileRepository:
         return db.scalar(select(SupplierProfile).where(SupplierProfile.id == profile_id))
 
     @staticmethod
-    def create(db: Session, user_id: uuid.UUID, data: SupplierProfileCreate) -> SupplierProfile:
+    def list_all(db: Session, limit: int = 100) -> List[SupplierProfile]:
+        return list(
+            db.scalars(
+                select(SupplierProfile)
+                .order_by(SupplierProfile.organization_name)
+                .limit(limit)
+            ).all()
+        )
+
+    @staticmethod
+    def create(
+        db: Session,
+        user_id: uuid.UUID,
+        data: SupplierProfileCreate,
+        verification_status: str = "PENDING_VERIFICATION",
+    ) -> SupplierProfile:
         profile = SupplierProfile(
             user_id=user_id,
             organization_name=data.organization_name,
@@ -37,6 +52,7 @@ class SupplierProfileRepository:
             operating_hours=data.operating_hours or {},
             storage_capabilities=data.storage_capabilities or {},
             description=data.description,
+            verification_status=verification_status,
         )
         db.add(profile)
         db.commit()
@@ -73,7 +89,12 @@ class ReceiverProfileRepository:
         )
 
     @staticmethod
-    def create(db: Session, user_id: uuid.UUID, data: ReceiverProfileCreate) -> ReceiverProfile:
+    def create(
+        db: Session,
+        user_id: uuid.UUID,
+        data: ReceiverProfileCreate,
+        verification_status: str = "PENDING_VERIFICATION",
+    ) -> ReceiverProfile:
         profile = ReceiverProfile(
             user_id=user_id,
             organization_name=data.organization_name,
@@ -91,6 +112,7 @@ class ReceiverProfileRepository:
             operating_hours=data.operating_hours or {},
             priority_level=data.priority_level,
             description=data.description,
+            verification_status=verification_status,
         )
         db.add(profile)
         db.commit()

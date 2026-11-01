@@ -55,6 +55,7 @@ class UserPublicResponse(BaseModel):
     role: str
     is_active: bool
     is_verified: bool
+    verification_status: str = "PENDING_VERIFICATION"
     created_at: datetime
     profile: Optional[Dict[str, Any]] = None
 

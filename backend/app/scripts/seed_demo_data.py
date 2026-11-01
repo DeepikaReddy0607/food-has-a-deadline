@@ -142,9 +142,13 @@ def seed_demo_environment():
                 role="SUPPLIER",
                 is_active=True,
                 is_verified=True,
+                verification_status="VERIFIED",
             )
             db.add(user)
             db.flush()
+        else:
+            user.is_verified = True
+            user.verification_status = "VERIFIED"
 
         profile = db.query(SupplierProfile).filter(SupplierProfile.user_id == user.id).first()
         if not profile:
@@ -162,11 +166,13 @@ def seed_demo_environment():
                 facility_type=s_info["facility_type"],
                 storage_capabilities=s_info["storage"],
                 description=f"Demonstration perishable supplier facility ({s_info['facility_type']}).",
+                verification_status="VERIFIED",
             )
             db.add(profile)
             db.flush()
             print(f"  + Created Supplier Profile: {s_info['name']}")
         else:
+            profile.verification_status = "VERIFIED"
             print(f"  - Supplier Profile exists: {s_info['name']}")
 
         supplier_profiles[s_info["email"]] = profile
@@ -227,9 +233,13 @@ def seed_demo_environment():
                 role="RECEIVER",
                 is_active=True,
                 is_verified=True,
+                verification_status="VERIFIED",
             )
             db.add(user)
             db.flush()
+        else:
+            user.is_verified = True
+            user.verification_status = "VERIFIED"
 
         profile = db.query(ReceiverProfile).filter(ReceiverProfile.user_id == user.id).first()
         if not profile:
@@ -249,11 +259,13 @@ def seed_demo_environment():
                 priority_level=r_info["priority"],
                 cold_storage_capabilities=r_info["cold_storage"],
                 description=f"Demonstration food relief receiver ({r_info['category']}).",
+                verification_status="VERIFIED",
             )
             db.add(profile)
             db.flush()
             print(f"  + Created Receiver Profile: {r_info['name']}")
         else:
+            profile.verification_status = "VERIFIED"
             print(f"  - Receiver Profile exists: {r_info['name']}")
 
         receiver_profiles[r_info["email"]] = profile

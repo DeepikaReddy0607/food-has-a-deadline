@@ -182,6 +182,44 @@ def test_complete_end_to_end_fhd_journey(api_client):
     assert demand_resp.json()["status"] in ("OPEN", "ACTIVE")
 
     # -------------------------------------------------------------------------
+    # STEP 2b: COORDINATOR VERIFICATION WORKFLOW
+    # -------------------------------------------------------------------------
+    coord_email = f"e2e_coord_{uid}@fhd.org"
+    coord_user_id = uuid.uuid4()
+    # Seed coordinator user directly in database
+    db = SessionLocal()
+    coord_user = User(
+        id=coord_user_id,
+        email=coord_email,
+        hashed_password="hashed_coordinator_pwd",
+        role="COORDINATOR",
+        is_active=True,
+    )
+    db.add(coord_user)
+    db.commit()
+    db.close()
+
+    from app.core.security import create_access_token
+    coord_token = create_access_token(subject=str(coord_user_id), role="COORDINATOR")
+    coord_headers = {"Authorization": f"Bearer {coord_token}"}
+
+    # Approve supplier
+    sup_appr = api_client.post(
+        f"/api/v1/verifications/SUPPLIER/{supplier_profile_id}/approve",
+        headers=coord_headers,
+    )
+    assert sup_appr.status_code == 200
+    assert sup_appr.json()["verification_status"] == "VERIFIED"
+
+    # Approve receiver
+    rec_appr = api_client.post(
+        f"/api/v1/verifications/RECEIVER/{receiver_profile_id}/approve",
+        headers=coord_headers,
+    )
+    assert rec_appr.status_code == 200
+    assert rec_appr.json()["verification_status"] == "VERIFIED"
+
+    # -------------------------------------------------------------------------
     # STEP 3: GEOSPATIAL INTELLIGENCE & ROUTING
     # -------------------------------------------------------------------------
     route_resp = api_client.post(
@@ -217,25 +255,6 @@ def test_complete_end_to_end_fhd_journey(api_client):
     # -------------------------------------------------------------------------
     # STEP 5 & 6: COORDINATOR OPTIMIZATION & AI AGENT
     # -------------------------------------------------------------------------
-    coord_email = f"e2e_coord_{uid}@fhd.org"
-    coord_user_id = uuid.uuid4()
-    # Seed coordinator user directly in database
-    db = SessionLocal()
-    coord_user = User(
-        id=coord_user_id,
-        email=coord_email,
-        hashed_password="hashed_coordinator_pwd",
-        role="COORDINATOR",
-        is_active=True,
-    )
-    db.add(coord_user)
-    db.commit()
-    db.close()
-
-    from app.core.security import create_access_token
-    coord_token = create_access_token(subject=str(coord_user_id), role="COORDINATOR")
-    coord_headers = {"Authorization": f"Bearer {coord_token}"}
-
     # Run Google OR-Tools Allocation Optimizer
     opt_resp = api_client.post(
         "/api/v1/optimization/allocation-proposals",

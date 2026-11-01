@@ -50,6 +50,47 @@ export type FacilityType =
   | 'FOOD_PROCESSOR'
   | 'OTHER'
 
+export type VerificationStatus =
+  | 'PENDING_VERIFICATION'
+  | 'DOCUMENTS_SUBMITTED'
+  | 'VERIFIED'
+  | 'REJECTED'
+
+export interface OrganizationVerificationItem {
+  org_id: string
+  user_id: string
+  org_name: string
+  org_type: 'SUPPLIER' | 'RECEIVER'
+  email: string
+  registered_at: string
+  verification_status: VerificationStatus
+  license_number?: string | null
+  representative_name?: string | null
+  address: string
+  city?: string | null
+  has_document: boolean
+  document_name?: string | null
+  submitted_at?: string | null
+  verified_at?: string | null
+  rejection_reason?: string | null
+}
+
+export interface OrganizationVerificationStatusResponse {
+  org_id?: string | null
+  user_id: string
+  org_name?: string | null
+  org_type: string
+  verification_status: VerificationStatus
+  is_verified: boolean
+  license_number?: string | null
+  representative_name?: string | null
+  has_document: boolean
+  document_name?: string | null
+  submitted_at?: string | null
+  verified_at?: string | null
+  rejection_reason?: string | null
+}
+
 export interface SupplierStorageCapabilities {
   ambient: boolean
   refrigerated: boolean
@@ -71,6 +112,14 @@ export interface SupplierProfile {
   operating_hours?: Record<string, unknown> | null
   storage_capabilities?: SupplierStorageCapabilities | null
   description?: string | null
+  verification_status?: VerificationStatus
+  is_verified?: boolean
+  license_number?: string | null
+  representative_name?: string | null
+  verification_document_name?: string | null
+  verification_submitted_at?: string | null
+  verified_at?: string | null
+  rejection_reason?: string | null
   created_at: string
   updated_at: string
 }
@@ -136,6 +185,14 @@ export interface ReceiverProfile {
   operating_hours?: Record<string, unknown> | null
   priority_level: number
   description?: string | null
+  verification_status?: VerificationStatus
+  is_verified?: boolean
+  license_number?: string | null
+  representative_name?: string | null
+  verification_document_name?: string | null
+  verification_submitted_at?: string | null
+  verified_at?: string | null
+  rejection_reason?: string | null
   created_at: string
   updated_at: string
 }

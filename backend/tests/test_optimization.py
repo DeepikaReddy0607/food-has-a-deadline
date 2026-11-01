@@ -554,6 +554,15 @@ def setup_optimization_environment(client, db_session) -> Dict[str, Any]:
         headers=rec_headers,
     )
 
+    # Mark profiles verified for matching/optimization
+    for sp in db_session.query(SupplierProfile).all():
+        sp.verification_status = "VERIFIED"
+        sp.is_verified = True
+    for rp in db_session.query(ReceiverProfile).all():
+        rp.verification_status = "VERIFIED"
+        rp.is_verified = True
+    db_session.commit()
+
     # Demand: 80 kg Apples
     res_d1 = client.post(
         "/api/v1/demand-requests",

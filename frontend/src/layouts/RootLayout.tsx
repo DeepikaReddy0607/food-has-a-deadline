@@ -114,6 +114,10 @@ export const RootLayout: React.FC = () => {
                       <Truck className="h-3.5 w-3.5" />
                       Transactions
                     </Link>
+                    <Link to="/coordinator/verifications" className={navLinkClass('/coordinator/verifications')}>
+                      <ShieldCheck className="h-3.5 w-3.5" />
+                      Verifications
+                    </Link>
                   </>
                 )}
 
@@ -278,6 +282,16 @@ export const RootLayout: React.FC = () => {
                     >
                       <Truck className="h-4 w-4" />
                       Transactions
+                    </Link>
+                    <Link
+                      to="/coordinator/verifications"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium ${
+                        isActive('/coordinator/verifications') ? 'bg-primary text-white' : 'hover:bg-muted'
+                      }`}
+                    >
+                      <ShieldCheck className="h-4 w-4" />
+                      Verifications
                     </Link>
                   </>
                 )}

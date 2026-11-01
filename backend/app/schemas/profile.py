@@ -135,6 +135,13 @@ class SupplierProfileResponse(BaseModel):
     operating_hours: Optional[Dict[str, Any]] = None
     storage_capabilities: Optional[Dict[str, bool]] = None
     description: Optional[str] = None
+    verification_status: str = "PENDING_VERIFICATION"
+    is_verified: bool = False
+    license_number: Optional[str] = None
+    representative_name: Optional[str] = None
+    verification_submitted_at: Optional[datetime] = None
+    verified_at: Optional[datetime] = None
+    rejection_reason: Optional[str] = None
     created_at: datetime
     updated_at: datetime
 
@@ -259,6 +266,13 @@ class ReceiverProfileResponse(BaseModel):
     operating_hours: Optional[Dict[str, Any]] = None
     priority_level: int
     description: Optional[str] = None
+    verification_status: str = "PENDING_VERIFICATION"
+    is_verified: bool = False
+    license_number: Optional[str] = None
+    representative_name: Optional[str] = None
+    verification_submitted_at: Optional[datetime] = None
+    verified_at: Optional[datetime] = None
+    rejection_reason: Optional[str] = None
     created_at: datetime
     updated_at: datetime
 

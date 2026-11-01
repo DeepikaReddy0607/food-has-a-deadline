@@ -36,6 +36,12 @@ class SurplusService:
     ) -> SurplusListing:
         profile = cls._get_verified_supplier_profile(db, user)
 
+        if profile.verification_status == "REJECTED":
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Rejected organizations cannot publish surplus listings.",
+            )
+
         # Fallback to profile address if pickup_address not provided
         if not data.pickup_address or not data.pickup_address.strip():
             data.pickup_address = (
