@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -22,6 +22,27 @@ class Settings(BaseSettings):
 
     # CORS / Frontend
     FRONTEND_URL: str = "http://localhost:5173"
+
+    @property
+    def cors_origins(self) -> List[str]:
+        """
+        Derives the explicit list of allowed CORS origins.
+        Always includes the production Cloudflare Workers frontend and local development origins.
+        Also parses any additional comma-separated origins from the FRONTEND_URL environment variable.
+        """
+        origins = [
+            "https://food-has-a-deadline.deepikareddyrudru.workers.dev",
+            "http://localhost:5173",
+            "http://127.0.0.1:5173",
+            "http://localhost:3000",
+            "http://127.0.0.1:3000",
+        ]
+        if self.FRONTEND_URL:
+            for url in self.FRONTEND_URL.split(","):
+                cleaned = url.strip().rstrip("/")
+                if cleaned and cleaned not in origins:
+                    origins.append(cleaned)
+        return origins
 
     # Geospatial & Routing
     OSRM_BASE_URL: str = "http://router.project-osrm.org"
