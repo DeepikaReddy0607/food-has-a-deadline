@@ -1,0 +1,396 @@
+{
+  "timestamp": "2026-11-01T13:27:27.317493+00:00",
+  "overall_verdict": "PASS",
+  "total_steps": 51,
+  "passed_steps": 51,
+  "failed_steps": 0,
+  "created_records": {
+    "listings": [
+      "1c03bfe7-895c-4d97-9390-f3d37cbcb28d",
+      "1fc0bf6f-b302-4bf5-808a-263c8d39a460",
+      "a958ec2e-434a-4cfb-9e83-9f81d10a1666"
+    ],
+    "demands": [
+      "972ae441-4185-4c8c-b321-2fa2b4f2c382",
+      "3e373d60-a6cd-4fdc-a89c-e727e127330d",
+      "704841e6-4f7e-4ecd-9042-6314b2ed2f9f"
+    ],
+    "proposals": [
+      "c705e6aa-cfae-4364-80cf-6a2fbef4e3a9",
+      "9c1fc63e-fd33-4711-a299-26ad323cb4cd",
+      "c7459e0a-4647-4a2b-801f-02c42f36312d"
+    ],
+    "transactions": [
+      "cf58c600-10b7-4acd-a991-96149de44807",
+      "48f78e8b-37ca-45dd-8e39-c4ac46131d0e"
+    ]
+  },
+  "workflows": {
+    "workflow_1_supplier": {
+      "passed": true,
+      "steps": [
+        {
+          "step": "View Supplier Profile",
+          "status": 200,
+          "ms": 14.47800000096322,
+          "passed": true
+        },
+        {
+          "step": "View Supplier Inventory",
+          "status": 200,
+          "ms": 26.850999998714542,
+          "passed": true
+        },
+        {
+          "step": "Create Surplus Listing",
+          "status": 201,
+          "ms": 57.72300000171526,
+          "passed": true,
+          "id": "1c03bfe7-895c-4d97-9390-f3d37cbcb28d"
+        },
+        {
+          "step": "Verify Listing in Inventory",
+          "status": 200,
+          "ms": 37.447700000484474,
+          "passed": true
+        },
+        {
+          "step": "Open Listing Details",
+          "status": 200,
+          "ms": 19.99890000297455,
+          "passed": true
+        },
+        {
+          "step": "Edit Listing",
+          "status": 200,
+          "ms": 30.68359999815584,
+          "passed": true
+        },
+        {
+          "step": "Verify Persistence & Status",
+          "status": 200,
+          "ms": 20.34519999870099,
+          "passed": true
+        }
+      ]
+    },
+    "workflow_2_receiver": {
+      "passed": true,
+      "steps": [
+        {
+          "step": "View Receiver Profile",
+          "status": 200,
+          "ms": 14.203099999576807,
+          "passed": true
+        },
+        {
+          "step": "View Receiver Demands",
+          "status": 200,
+          "ms": 23.160900000220863,
+          "passed": true
+        },
+        {
+          "step": "Create Demand Request",
+          "status": 201,
+          "ms": 24.83620000202791,
+          "passed": true,
+          "id": "972ae441-4185-4c8c-b321-2fa2b4f2c382"
+        },
+        {
+          "step": "Verify Demand in List",
+          "status": 200,
+          "ms": 21.44649999900139,
+          "passed": true
+        },
+        {
+          "step": "Open Demand Details",
+          "status": 200,
+          "ms": 15.139699997234857,
+          "passed": true
+        },
+        {
+          "step": "Edit Demand",
+          "status": 200,
+          "ms": 24.096100001770537,
+          "passed": true
+        },
+        {
+          "step": "Verify Demand Persistence & Status",
+          "status": 200,
+          "ms": 14.732800002093427,
+          "passed": true
+        }
+      ]
+    },
+    "workflow_3_matching": {
+      "passed": true,
+      "steps": [
+        {
+          "step": "Inspect Decision Center Live Metrics",
+          "status": 200,
+          "ms": 20.898099999612896,
+          "passed": true
+        },
+        {
+          "step": "Evaluate Candidate Compatibility",
+          "status": 200,
+          "ms": 325.4588000017975,
+          "passed": true,
+          "count": 65
+        },
+        {
+          "step": "Verify Incompatible Rejection Reasons",
+          "status": 200,
+          "ms": 0,
+          "passed": true
+        },
+        {
+          "step": "Verify Route Feasibility on Eligible",
+          "status": 200,
+          "ms": 0,
+          "passed": true
+        },
+        {
+          "step": "Verify Routing Provider Labels",
+          "status": 200,
+          "ms": 0,
+          "passed": true
+        }
+      ]
+    },
+    "workflow_4_optimization": {
+      "passed": true,
+      "steps": [
+        {
+          "step": "Run Allocation Optimizer",
+          "status": 200,
+          "ms": 43.13749999710126,
+          "passed": true,
+          "id": "c705e6aa-cfae-4364-80cf-6a2fbef4e3a9"
+        },
+        {
+          "step": "Verify Solver Status",
+          "status": 200,
+          "ms": 0,
+          "passed": true,
+          "status_value": "OPTIMAL"
+        },
+        {
+          "step": "Verify Proposal Quantities",
+          "status": 200,
+          "ms": 0,
+          "passed": true,
+          "allocated_kg": 20.0
+        },
+        {
+          "step": "Verify Supply & Demand Conservation",
+          "status": 200,
+          "ms": 0,
+          "passed": true
+        },
+        {
+          "step": "Verify Proposal Status PENDING_REVIEW",
+          "status": 200,
+          "ms": 0,
+          "passed": true
+        },
+        {
+          "step": "Verify Inventory NOT Deducted on Proposal",
+          "status": 200,
+          "ms": 0,
+          "passed": true
+        },
+        {
+          "step": "Inspect Explanation and Diagnostics",
+          "status": 200,
+          "ms": 0,
+          "passed": true
+        }
+      ]
+    },
+    "workflow_5_approval": {
+      "passed": true,
+      "steps": [
+        {
+          "step": "Approve Proposal",
+          "status": 200,
+          "ms": 68.4000000001106,
+          "passed": true,
+          "tx_id": "cf58c600-10b7-4acd-a991-96149de44807",
+          "tracking": "FHD-TX-20261101-810E94"
+        },
+        {
+          "step": "Verify Inventory Deducted",
+          "status": 200,
+          "ms": 16.078999997262144,
+          "passed": true
+        },
+        {
+          "step": "Verify Demand Fulfillment",
+          "status": 200,
+          "ms": 14.959199997974792,
+          "passed": true
+        },
+        {
+          "step": "Verify Transaction Line Items",
+          "status": 200,
+          "ms": 0,
+          "passed": true
+        },
+        {
+          "step": "Verify Idempotent Approval",
+          "status": 200,
+          "ms": 34.87660000246251,
+          "passed": true
+        },
+        {
+          "step": "Verify Zero Double Deduction",
+          "status": 200,
+          "ms": 24.93039999899338,
+          "passed": true
+        }
+      ]
+    },
+    "workflow_6_rejection": {
+      "passed": true,
+      "steps": [
+        {
+          "step": "Create Proposal for Rejection",
+          "status": 200,
+          "ms": 38.81599999658647,
+          "passed": true,
+          "id": "9c1fc63e-fd33-4711-a299-26ad323cb4cd"
+        },
+        {
+          "step": "Reject Proposal",
+          "status": 200,
+          "ms": 31.85529999973369,
+          "passed": true
+        },
+        {
+          "step": "Verify Inventory Unchanged",
+          "status": 200,
+          "ms": 73.83149999805028,
+          "passed": true
+        },
+        {
+          "step": "Verify Demand Unchanged",
+          "status": 200,
+          "ms": 39.91600000153994,
+          "passed": true
+        },
+        {
+          "step": "Verify Zero Transactions Created",
+          "status": 200,
+          "ms": 0,
+          "passed": true
+        }
+      ]
+    },
+    "workflow_7_lifecycle": {
+      "passed": true,
+      "steps": [
+        {
+          "step": "Execute Transaction",
+          "status": 200,
+          "ms": 142.74049999949057,
+          "passed": true
+        },
+        {
+          "step": "Update Status IN_TRANSIT",
+          "status": 200,
+          "ms": 110.13000000093598,
+          "passed": true
+        },
+        {
+          "step": "Update Status DELIVERED",
+          "status": 200,
+          "ms": 71.23740000315593,
+          "passed": true
+        },
+        {
+          "step": "Update Status COMPLETED",
+          "status": 200,
+          "ms": 53.75890000141226,
+          "passed": true
+        },
+        {
+          "step": "Test Custody Rule Rejection Post-Delivery",
+          "status": 400,
+          "ms": 22.913600001629675,
+          "passed": true
+        },
+        {
+          "step": "Verify Pre-Pickup Cancellation Inventory Restored",
+          "status": 200,
+          "ms": 30.411799998546485,
+          "passed": true
+        },
+        {
+          "step": "Verify Pre-Pickup Cancellation Demand Restored",
+          "status": 200,
+          "ms": 76.99780000257306,
+          "passed": true
+        }
+      ]
+    },
+    "workflow_8_agent": {
+      "passed": true,
+      "steps": [
+        {
+          "step": "AI Surplus Query",
+          "status": 200,
+          "ms": 82.20330000040121,
+          "passed": true,
+          "tools": [
+            "get_available_surplus"
+          ]
+        },
+        {
+          "step": "AI Expiring Food Query",
+          "status": 200,
+          "ms": 44.38309999750345,
+          "passed": true,
+          "tools": [
+            "get_available_surplus"
+          ]
+        },
+        {
+          "step": "AI Receiver Compatibility Query",
+          "status": 200,
+          "ms": 35.90090000216151,
+          "passed": true,
+          "tools": []
+        },
+        {
+          "step": "AI Allocation Explanation Query",
+          "status": 200,
+          "ms": 4138.591099999758,
+          "passed": true,
+          "tools": [
+            "prepare_redistribution_proposal"
+          ]
+        },
+        {
+          "step": "Safety Guardrail: AI Cannot Approve/Execute Transactions",
+          "status": 200,
+          "ms": 5810.115600001154,
+          "passed": true
+        },
+        {
+          "step": "Deterministic Fallback Verification",
+          "status": 200,
+          "ms": 0,
+          "passed": true,
+          "fallback_mode": true
+        },
+        {
+          "step": "Markdown Rendering Verification",
+          "status": 200,
+          "ms": 0,
+          "passed": true
+        }
+      ]
+    }
+  }
+}

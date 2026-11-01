@@ -112,8 +112,10 @@ export const OptimizationDashboard: React.FC = () => {
   // Candidate Matching Handler
   // ---------------------------------------------------------------------------
   const handleSelectListing = async (listingId: string) => {
+    if (candidatesLoading) return // Prevent concurrent duplicate requests
     setSelectedListingId(listingId)
     setCandidatesLoading(true)
+    setCandidatesError(null)
     setSelectedCandidate(null)
     setRouteEstimate(null)
     setRouteError(null)
@@ -132,6 +134,16 @@ export const OptimizationDashboard: React.FC = () => {
       }
     } catch (err: unknown) {
       console.warn('Failed to load candidate matches:', err)
+      if (
+        (err && typeof err === 'object' && 'code' in err && (err as { code?: string }).code === 'ECONNABORTED') ||
+        (err instanceof Error && err.message.toLowerCase().includes('timeout'))
+      ) {
+        setCandidatesError(
+          'Candidate matching request timed out after 60 seconds. The server may still be evaluating transit constraints; please try again.'
+        )
+      } else {
+        setCandidatesError('Failed to load candidate matches for the selected food surplus batch.')
+      }
     } finally {
       setCandidatesLoading(false)
     }
@@ -168,6 +180,7 @@ export const OptimizationDashboard: React.FC = () => {
   // Trigger OR-Tools Optimization Run
   // ---------------------------------------------------------------------------
   const handleRunOptimization = async () => {
+    if (loading) return // Prevent duplicate concurrent submissions
     setLoading(true)
     setError(null)
     setApprovedTxCode(null)
@@ -181,7 +194,14 @@ export const OptimizationDashboard: React.FC = () => {
       // Refresh perishability counts
       fetchBatchPerishability()
     } catch (err: unknown) {
-      if (err && typeof err === 'object' && 'response' in err) {
+      if (
+        (err && typeof err === 'object' && 'code' in err && (err as { code?: string }).code === 'ECONNABORTED') ||
+        (err instanceof Error && err.message.toLowerCase().includes('timeout'))
+      ) {
+        setError(
+          'Optimization request exceeded its 60-second client timeout. The mathematical solver may still be completing calculations on the server. Please check recent proposals or retry with a filtered subset.'
+        )
+      } else if (err && typeof err === 'object' && 'response' in err) {
         const axErr = err as { response?: { data?: { detail?: string } } }
         setError(axErr.response?.data?.detail || 'Failed to run optimization.')
       } else {
@@ -688,6 +708,23 @@ export const OptimizationDashboard: React.FC = () => {
               <div className="py-12 text-center text-xs text-muted-foreground flex items-center justify-center gap-2">
                 <Loader2 className="h-4 w-4 animate-spin text-primary" />
                 Evaluating multi-factor constraints (category, storage compatibility, road buffers)...
+              </div>
+            ) : candidatesError ? (
+              <div className="rounded-xl border border-destructive/30 bg-destructive/10 p-6 text-center text-xs text-destructive space-y-2">
+                <div className="flex items-center justify-center gap-1.5 font-semibold">
+                  <AlertTriangle className="h-4 w-4 text-destructive" />
+                  <span>{candidatesError}</span>
+                </div>
+                {selectedListingId && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleSelectListing(selectedListingId)}
+                    className="text-xs border-destructive/40 text-destructive hover:bg-destructive/15 mt-2"
+                  >
+                    Retry Candidate Evaluation
+                  </Button>
+                )}
               </div>
             ) : !candidatesData || filteredCandidates.length === 0 ? (
               <div className="rounded-xl border border-dashed border-border p-8 text-center text-xs text-muted-foreground space-y-1">

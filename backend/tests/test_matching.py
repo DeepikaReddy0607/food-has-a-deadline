@@ -535,3 +535,86 @@ def test_read_only_integrity_matching_does_not_mutate_state(client, db_session):
     assert demand_after.fulfilled_quantity_kg == dem_fulfilled_before
     assert listing_after.status == "ACTIVE"
     assert demand_after.status == "OPEN"
+
+
+# =============================================================================
+# 4. REGRESSION TESTS (DEF-FE-002 PERFORMANCE REMEDIATION)
+# =============================================================================
+
+def test_osrm_skipped_for_cheap_incompatible_candidates(client):
+    """DEF-FE-002: Ensure external road routing is NOT invoked for candidates failing cheap filters."""
+    data = setup_matching_scenario(client)
+    listing_id = data["listing_id"]
+    headers = data["sup_headers"]
+
+    with patch("app.matching.matching_service.routing_service.estimate_route") as mock_estimate:
+        # Configure mock return value for when it IS called
+        from app.geospatial.models import RouteEstimateResult, Coordinates
+        mock_estimate.return_value = RouteEstimateResult(
+            supplier_id=uuid.uuid4(),
+            receiver_id=uuid.uuid4(),
+            supplier_coordinates=Coordinates(latitude=38.4404, longitude=-122.7141),
+            receiver_coordinates=Coordinates(latitude=38.4450, longitude=-122.7100),
+            straight_line_distance_km=1.2,
+            road_distance_km=1.5,
+            estimated_travel_minutes=4.0,
+            routing_provider="OSRM",
+            is_fallback=False,
+            feasibility="FEASIBLE",
+            available_minutes=1200.0,
+            required_minutes=34.0,
+            warnings=[],
+            evaluated_at=datetime.now(timezone.utc),
+        )
+
+        res = client.get(
+            f"/api/v1/matching/listings/{listing_id}/candidates?include_ineligible=true",
+            headers=headers,
+        )
+        assert res.status_code == 200
+        body = res.json()
+
+        # In setup_matching_scenario, demand1 is FRUITS (compatible), demand2 is DAIRY (incompatible)
+        # Therefore, estimate_route should be called EXACTLY once (only for demand1)
+        assert mock_estimate.call_count == 1
+
+        # Verify candidate models
+        eligible = [c for c in body["candidates"] if c["is_eligible"]]
+        ineligible = [c for c in body["candidates"] if not c["is_eligible"]]
+
+        assert len(eligible) >= 1
+        assert eligible[0]["routing_provider"] == "OSRM"
+
+        # Ineligible candidates must have skipped routing
+        assert len(ineligible) >= 1
+        dairy_cand = next(c for c in ineligible if c["food_category"] == "DAIRY")
+        assert dairy_cand["routing_provider"] == "HAVERSINE_FALLBACK"
+        assert dairy_cand["transit_feasibility"] == "UNKNOWN"
+        assert any("Road routing query skipped" in w for w in dairy_cand["warnings"])
+
+
+def test_demand_matching_skips_osrm_for_incompatible_listings(client):
+    """DEF-FE-002: Ensure find_candidates_for_demand also skips road routing for incompatible listings."""
+    data = setup_matching_scenario(client)
+    demand2_id = data["demand2_id"]  # DAIRY demand
+    headers = data["rec2_headers"]
+
+    with patch("app.matching.matching_service.routing_service.estimate_route") as mock_estimate:
+        res = client.get(
+            f"/api/v1/matching/demands/{demand2_id}/candidates?include_ineligible=true",
+            headers=headers,
+        )
+        assert res.status_code == 200
+        body = res.json()
+
+        # The listing in setup_matching_scenario is FRUITS, which is incompatible with DAIRY demand
+        # Thus, estimate_route must NEVER be called for the incompatible listing!
+        assert mock_estimate.call_count == 0
+
+        # The candidate must be returned as ineligible with fallback routing
+        candidates = body["candidates"]
+        assert len(candidates) >= 1
+        assert candidates[0]["is_eligible"] is False
+        assert candidates[0]["routing_provider"] == "HAVERSINE_FALLBACK"
+        assert any("Road routing query skipped" in w for w in candidates[0]["warnings"])
+

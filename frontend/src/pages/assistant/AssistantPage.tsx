@@ -18,6 +18,7 @@ import {
   Terminal,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { FormattedMarkdown } from '@/components/FormattedMarkdown'
 import { useAuth } from '@/context/AuthContext'
 import { apiService } from '@/services/api'
 import type {
@@ -363,8 +364,8 @@ export const AssistantPage: React.FC = () => {
                       }`}
                     >
                       {/* Markdown rendered / formatted message content */}
-                      <div className="whitespace-pre-wrap break-words prose-xs">
-                        {msg.content}
+                      <div className="break-words prose-xs">
+                        <FormattedMarkdown content={msg.content} />
                       </div>
 
                       {/* Tool Calls Accordion */}

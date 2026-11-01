@@ -91,7 +91,13 @@ export const SurplusListingDetails: React.FC = () => {
       })
       setMatchingData(data)
     } catch (err: any) {
-      setMatchingError(err.response?.data?.detail || 'Failed to fetch candidate matches.')
+      if (err?.code === 'ECONNABORTED' || err?.message?.toLowerCase().includes('timeout')) {
+        setMatchingError(
+          'Candidate evaluation timed out after 60 seconds. Road routing calculation may still be processing on the server.'
+        )
+      } else {
+        setMatchingError(err.response?.data?.detail || 'Failed to fetch candidate matches.')
+      }
     } finally {
       setMatchingLoading(false)
     }

@@ -1,0 +1,24 @@
+{
+  "candidate_matching": {
+    "endpoint": "GET /api/v1/matching/listings/2fa8426f-21fb-434e-9522-a2aacce78426/candidates?include_ineligible=true",
+    "http_status": 200,
+    "duration_seconds": 0.038,
+    "eligible_candidates": 5,
+    "ineligible_candidates": 49,
+    "total_candidates": 54,
+    "osrm_skipped_count": 49,
+    "within_extended_timeout": true,
+    "within_original_timeout": true
+  },
+  "optimization_proposal": {
+    "endpoint": "POST /api/v1/optimization/allocation-proposals",
+    "http_status": 200,
+    "duration_seconds": 3.072,
+    "proposal_id": "1a3112ac-721c-4356-910d-8a6cccac1535",
+    "allocations_count": 23,
+    "total_allocated_kg": 800.0,
+    "solver_status": "OPTIMAL",
+    "solver_duration_ms": null,
+    "within_extended_timeout": true
+  }
+}

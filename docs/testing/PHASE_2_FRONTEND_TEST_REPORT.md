@@ -62,30 +62,30 @@ In accordance with strict QA standards, the testing methodology and tooling cons
 
 ## 4. Routes and Components Inventory
 
-All 20 client application routes defined in `frontend/src/App.tsx` and their backing components were inspected:
+All 20 client application routes defined in `frontend/src/App.tsx` and their backing components were inspected (1 root landing route [`/`] + 19 feature sub-routes = 20 total client routes):
 
-| Route Path | Backing Component | Allowed Roles | Functional Purpose | Audit Status |
-| :--- | :--- | :--- | :--- | :--- |
-| `/` | `HomePage.tsx` | Public | Landing page, illustrative workflow, value proposition | Tested Successfully |
-| `/login` | `LoginPage.tsx` | Public | Authentication portal with role-based redirect | Tested Successfully |
-| `/register` | `RegisterPage.tsx` | Public | Account creation for Suppliers and Receivers | Tested Successfully |
-| `/supplier/profile` | `SupplierProfileView.tsx` | `SUPPLIER`, `ADMIN` | Read-only view of facility coordinates and capabilities | Tested Successfully |
-| `/supplier/profile/setup` | `SupplierProfileSetup.tsx` | `SUPPLIER`, `ADMIN` | Initial profile onboarding form with geolocation | Tested Successfully |
-| `/supplier/profile/edit` | `SupplierProfileEdit.tsx` | `SUPPLIER`, `ADMIN` | Profile editing and operating hours configuration | Tested Successfully |
-| `/supplier/inventory` | `MySurplusInventory.tsx` | `SUPPLIER`, `ADMIN` | Paginated surplus listings table, search, and status chips | Tested Successfully |
-| `/supplier/inventory/new` | `CreateSurplusListing.tsx` | `SUPPLIER`, `ADMIN` | Food surplus intake form with date/time pickers | Tested Successfully |
-| `/supplier/inventory/:id` | `SurplusListingDetails.tsx`| `SUPPLIER`, `ADMIN` | Detail view, batch status lifecycle, candidate preview | Tested Successfully |
-| `/supplier/inventory/:id/edit`| `EditSurplusListing.tsx` | `SUPPLIER`, `ADMIN` | Quantity and shelf-life deadline modifications | Tested Successfully |
-| `/receiver/profile` | `ReceiverProfileView.tsx` | `RECEIVER`, `ADMIN` | Community organization capacity and cold storage profile | Tested Successfully |
-| `/receiver/profile/setup` | `ReceiverProfileSetup.tsx` | `RECEIVER`, `ADMIN` | Receiver facility onboarding form | Tested Successfully |
-| `/receiver/profile/edit` | `ReceiverProfileEdit.tsx` | `RECEIVER`, `ADMIN` | Receiver capability, dietary, and address update | Tested Successfully |
-| `/receiver/demands` | `MyDemandRequests.tsx` | `RECEIVER`, `ADMIN` | Food demand intake queue, status tabs, and urgent badges | Tested Successfully |
-| `/receiver/demands/new` | `CreateDemandRequest.tsx` | `RECEIVER`, `ADMIN` | New food demand request form with priority weight | Tested Successfully |
-| `/receiver/demands/:id` | `DemandDetails.tsx` | `RECEIVER`, `ADMIN` | Demand detail view, fulfillment progress, candidate supply | Tested Successfully |
-| `/receiver/demands/:id/edit`| `EditDemandRequest.tsx` | `RECEIVER`, `ADMIN` | Modify demand quantities or target required-by dates | Tested Successfully |
-| `/coordinator/optimization` | `OptimizationDashboard.tsx`| `COORDINATOR`, `ADMIN`| Intelligent Allocation Decision Center & CP-SAT Solver | Tested Successfully |
-| `/coordinator/transactions` | `TransactionsDashboard.tsx`| `COORDINATOR`, `ADMIN`| Human approval dispatch lifecycle and tracking codes | Tested Successfully |
-| `/assistant` | `AssistantPage.tsx` | All Authenticated | AI Redistribution Copilot with Gemini & Fallback | Tested Successfully |
+| # | Route Path | Backing Component | Allowed Roles | Functional Purpose | Audit Status |
+| :- | :--- | :--- | :--- | :--- | :--- |
+| 1 | `/` | `HomePage.tsx` | Public | Landing page, illustrative workflow, value proposition | Tested Successfully |
+| 2 | `/login` | `LoginPage.tsx` | Public | Authentication portal with role-based redirect | Tested Successfully |
+| 3 | `/register` | `RegisterPage.tsx` | Public | Account creation for Suppliers and Receivers | Tested Successfully |
+| 4 | `/supplier/profile` | `SupplierProfileView.tsx` | `SUPPLIER`, `ADMIN` | Read-only view of facility coordinates and capabilities | Tested Successfully |
+| 5 | `/supplier/profile/setup` | `SupplierProfileSetup.tsx` | `SUPPLIER`, `ADMIN` | Initial profile onboarding form with geolocation | Tested Successfully |
+| 6 | `/supplier/profile/edit` | `SupplierProfileEdit.tsx` | `SUPPLIER`, `ADMIN` | Profile editing and operating hours configuration | Tested Successfully |
+| 7 | `/supplier/inventory` | `MySurplusInventory.tsx` | `SUPPLIER`, `ADMIN` | Paginated surplus listings table, search, and status chips | Tested Successfully |
+| 8 | `/supplier/inventory/new` | `CreateSurplusListing.tsx` | `SUPPLIER`, `ADMIN` | Food surplus intake form with date/time pickers | Tested Successfully |
+| 9 | `/supplier/inventory/:id` | `SurplusListingDetails.tsx`| `SUPPLIER`, `ADMIN` | Detail view, batch status lifecycle, candidate preview | Tested Successfully |
+| 10 | `/supplier/inventory/:id/edit`| `EditSurplusListing.tsx` | `SUPPLIER`, `ADMIN` | Quantity and shelf-life deadline modifications | Tested Successfully |
+| 11 | `/receiver/profile` | `ReceiverProfileView.tsx` | `RECEIVER`, `ADMIN` | Community organization capacity and cold storage profile | Tested Successfully |
+| 12 | `/receiver/profile/setup` | `ReceiverProfileSetup.tsx` | `RECEIVER`, `ADMIN` | Receiver facility onboarding form | Tested Successfully |
+| 13 | `/receiver/profile/edit` | `ReceiverProfileEdit.tsx` | `RECEIVER`, `ADMIN` | Receiver capability, dietary, and address update | Tested Successfully |
+| 14 | `/receiver/demands` | `MyDemandRequests.tsx` | `RECEIVER`, `ADMIN` | Food demand intake queue, status tabs, and urgent badges | Tested Successfully |
+| 15 | `/receiver/demands/new` | `CreateDemandRequest.tsx` | `RECEIVER`, `ADMIN` | New food demand request form with priority weight | Tested Successfully |
+| 16 | `/receiver/demands/:id` | `DemandDetails.tsx` | `RECEIVER`, `ADMIN` | Demand detail view, fulfillment progress, candidate supply | Tested Successfully |
+| 17 | `/receiver/demands/:id/edit`| `EditDemandRequest.tsx` | `RECEIVER`, `ADMIN` | Modify demand quantities or target required-by dates | Tested Successfully |
+| 18 | `/coordinator/optimization` | `OptimizationDashboard.tsx`| `COORDINATOR`, `ADMIN`| Intelligent Allocation Decision Center & CP-SAT Solver | Tested Successfully |
+| 19 | `/coordinator/transactions` | `TransactionsDashboard.tsx`| `COORDINATOR`, `ADMIN`| Human approval dispatch lifecycle and tracking codes | Tested Successfully |
+| 20 | `/assistant` | `AssistantPage.tsx` | All Authenticated | AI Redistribution Copilot with Gemini & Fallback | Tested Successfully |
 
 ### Supporting Layout & Shared Components
 * **`RootLayout.tsx`:** Primary layout shell providing responsive navigation, sticky header, project banner, role-filtered navigation items, user email/role badge, mobile drawer, and standardized footer.
@@ -149,6 +149,11 @@ FHD FRONTEND API INTEGRATION & ROLE-BASED ACCESS AUDIT
 AUDIT SUMMARY: 39 PASSED, 3 DEFECT OBSERVATIONS out of 42 checks (92.9% Success).
 ================================================================================
 ```
+
+### Execution History and Metric Reconciliation
+* **Initial Audit Run (Run 1):** 37 PASS, 3 TIMEOUT (DEF-FE-001/002: candidate matching, optimization proposal, receiver RBAC blocked by in-flight worker), 2 FAIL (script key name typo `acceptable_conditions` vs `acceptable_food_condition` in initial test harness).
+* **Targeted Verification Run (Run 2):** Corrected test harness key names to verify backend schema parity against TypeScript models (`SurplusListing`: 100% match across 18 keys; `DemandRequest`: 100% match across 18 keys).
+* **Net Reconciliation:** 39 PASS, 3 TIMEOUT / Defect Observations out of 42 checks (92.9% success rate across all functional integration checks).
 
 ---
 
